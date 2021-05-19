@@ -1,6 +1,10 @@
+package by.sanko.spark.two.entity.main;
+
 import by.sanko.spark.two.entity.HotelData;
+import by.sanko.spark.two.entity.filter.FilterByWeather;
 import by.sanko.spark.two.parser.HotelParser;
 import by.sanko.spark.two.parser.Parser;
+import org.apache.spark.api.java.function.FilterFunction;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
 import org.apache.spark.sql.Row;
@@ -13,12 +17,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     private static final HashMap<Long, HotelData> hotelData = new HashMap<>();
-    private static final HashMap<Long, HashMap<String, Double>> hotelWeatherHM = new HashMap<>();
-
+    public static final HashMap<Long, HashMap<String, Double>> hotelWeatherHM = new HashMap<>();
+    private static final String HOTEL_WEATHER_JOINED  = "hotel-and-weather-joined-simple";
     public static void main(String[] args) {
         SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
-        invokeHotelData();
         spark.sparkContext().setLogLevel("ERROR");
+        invokeHotelData();
+        readWthData(spark,HOTEL_WEATHER_JOINED);
         Dataset<Row> data2017 = spark.read().format("csv")
                 .option("header", "true")
                 .option("delimiter", ";")
@@ -29,6 +34,8 @@ public class Main {
         for(String part : strings){
             System.out.println("Part is     " + part);
         }
+        System.out.println("Sorted rows is :");
+        data2017.filter(FilterByWeather.getInstance()).count();
     }
 
     private static void invokeHotelData(){
