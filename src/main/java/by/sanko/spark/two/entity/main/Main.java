@@ -27,7 +27,7 @@ public class Main {
         Dataset<Row> data2017 = spark.read().format("csv")
                 .option("header", "true")
                 .option("delimiter", ";")
-                .load("/user/hadoop/task1/expedia/new_ver/year=2017/*.csv");
+                .load("/user/hadoop/task1/expedia/new_ver/year=2016/*.csv");
         long distinctHotels =  data2017.selectExpr("CAST(hotel_id AS LONG)").distinct().count();
         System.out.println("DISTINCT HOTELS ARE " + distinctHotels);
         String[] strings = data2017.columns();
