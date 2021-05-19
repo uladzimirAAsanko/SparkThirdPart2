@@ -33,7 +33,6 @@ public class FilterByWeather implements FilterFunction<Row> {
             }
         }
         boolean anwser = firstValue && secondValue && thirdValue;
-        System.out.println(anwser);
         return anwser;
     }
 }
