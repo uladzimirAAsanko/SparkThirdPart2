@@ -35,7 +35,7 @@ public class Main {
             System.out.println("Part is     " + part);
         }
         System.out.println("Sorted rows is :");
-        data2017.filter(FilterByWeather.getInstance()).count();
+        data2017.filter(FilterByWeather.getInstance()).show();
     }
 
     private static void invokeHotelData(){
