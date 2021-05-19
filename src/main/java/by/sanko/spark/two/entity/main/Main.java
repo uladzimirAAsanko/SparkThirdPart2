@@ -84,6 +84,9 @@ public class Main {
             indexOfComma ++;
             int indexOfNextComma = value.indexOf(Parser.comma, indexOfComma);
             String date = value.substring(indexOfComma, indexOfNextComma);
+            if(date.substring(0, 4).equals("2017")){
+                System.out.println(date);
+            }
             Double avg = Double.parseDouble(value.substring(indexOfNextComma+1));
             HashMap<String, Double> map = hotelWeatherHM.get(hotelID);
             if(map == null){
