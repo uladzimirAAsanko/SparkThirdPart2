@@ -20,7 +20,7 @@ public class FilterByWeather implements FilterFunction<Row> {
 
     @Override
     public boolean call(Row row) throws Exception {
-        Long hotelID = row.getLong(19);
+        Long hotelID = row.getLong(20);
         String checkIN = row.getString(12);
         HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
         return map != null && map.get(checkIN) != null && map.get(checkIN) > 0;
