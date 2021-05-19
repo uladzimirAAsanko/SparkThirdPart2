@@ -24,6 +24,7 @@ public class FilterByWeather implements FilterFunction<Row> {
         String checkIN = row.getString(12);
         HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
         boolean anwser = map != null && map.get(checkIN) != null && map.get(checkIN) > 0;
+        System.out.println(anwser);
         return anwser;
     }
 }
