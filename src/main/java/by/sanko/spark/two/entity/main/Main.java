@@ -27,6 +27,8 @@ public class Main {
                 .option("header", "true")
                 .option("delimiter", ";")
                 .load("/user/hadoop/task1/expedia/new_ver/year=2017/*.csv");
+        long distinctHotels =  data2017.selectExpr("CAST(hotel_id AS LONG)").distinct().count();
+        System.out.println("DISTINCT HOTELS ARE " +distinctHotels);
         String[] strings = data2017.columns();
         System.out.println("Expedia rows are " + data2017.count());
         readWthData(spark,HOTEL_WEATHER_JOINED);
