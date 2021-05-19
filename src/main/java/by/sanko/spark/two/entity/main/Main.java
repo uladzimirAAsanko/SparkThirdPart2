@@ -30,9 +30,10 @@ public class Main {
                 .load("/user/hadoop/task1/expedia/new_ver/year=2017/*.csv");
         String[] strings = data2017.columns();
         System.out.println("Expedia rows are " + data2017.count());
-        System.out.println("Schema is " + data2017.schema());
+        int iterator = 0;
         for(String part : strings){
-            System.out.println("Part is     " + part);
+            System.out.println("Part is     " + part + " iterator is " + iterator);
+            iterator++;
         }
         System.out.println("Sorted rows is :");
         data2017.filter(FilterByWeather.getInstance()).show();
