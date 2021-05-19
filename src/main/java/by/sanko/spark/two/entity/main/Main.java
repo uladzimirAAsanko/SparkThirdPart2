@@ -23,13 +23,13 @@ public class Main {
         SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
         invokeHotelData();
-        readWthData(spark,HOTEL_WEATHER_JOINED);
         Dataset<Row> data2017 = spark.read().format("csv")
                 .option("header", "true")
                 .option("delimiter", ";")
                 .load("/user/hadoop/task1/expedia/new_ver/year=2017/*.csv");
         String[] strings = data2017.columns();
         System.out.println("Expedia rows are " + data2017.count());
+        readWthData(spark,HOTEL_WEATHER_JOINED);
         int iterator = 0;
         for(String part : strings){
             System.out.println("Part is     " + part + " iterator is " + iterator);
