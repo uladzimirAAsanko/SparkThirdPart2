@@ -28,11 +28,11 @@ public class FilterByWeather implements FilterFunction<Row> {
         boolean thirdValue = false;
         if(firstValue){
             secondValue = map.get(checkIN) != null;
+            System.out.println("Size is " + map.size());
             if(secondValue){
                 thirdValue = map.get(checkIN) > 0;
             }
         }
-        System.out.println("First check is " + firstValue + " second check " + secondValue + " third check is ");
         boolean anwser = firstValue && secondValue && thirdValue;
         System.out.println(anwser);
         return anwser;
