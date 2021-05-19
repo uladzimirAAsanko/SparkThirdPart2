@@ -1,7 +1,6 @@
 package by.sanko.spark.two.entity.main;
 
 import by.sanko.spark.two.entity.HotelData;
-import by.sanko.spark.two.entity.filter.FilterByWeather;
 import by.sanko.spark.two.parser.HotelParser;
 import by.sanko.spark.two.parser.Parser;
 import org.apache.spark.api.java.function.FilterFunction;
@@ -17,8 +16,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
     private static final HashMap<Long, HotelData> hotelData = new HashMap<>();
-    public static final HashMap<Long, HashMap<String, Double>> hotelWeatherHM = new HashMap<>();
+    private static final HashMap<Long, HashMap<String, Double>> hotelWeatherHM = new HashMap<>();
     private static final String HOTEL_WEATHER_JOINED  = "hotel-and-weather-joined-simple";
+    private static FilterByWeather filter = new FilterByWeather();
+
     public static void main(String[] args) {
         SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
@@ -28,7 +29,7 @@ public class Main {
                 .option("delimiter", ";")
                 .load("/user/hadoop/task1/expedia/new_ver/year=2017/*.csv");
         long distinctHotels =  data2017.selectExpr("CAST(hotel_id AS LONG)").distinct().count();
-        System.out.println("DISTINCT HOTELS ARE " +distinctHotels);
+        System.out.println("DISTINCT HOTELS ARE " + distinctHotels);
         String[] strings = data2017.columns();
         System.out.println("Expedia rows are " + data2017.count());
         readWthData(spark,HOTEL_WEATHER_JOINED);
@@ -38,7 +39,7 @@ public class Main {
             iterator++;
         }
         System.out.println("Sorted rows is :");
-        data2017.filter(FilterByWeather.getInstance()).show();
+        data2017.filter(filter).show();
     }
 
     private static void invokeHotelData(){
@@ -100,5 +101,25 @@ public class Main {
         AtomicInteger i = new AtomicInteger();
         hotelWeatherHM.forEach((k,v)-> i.addAndGet(v.size()));
         System.out.println("All values are " + i);
+    }
+    public static class FilterByWeather implements FilterFunction<Row> {
+
+        @Override
+        public boolean call(Row row) throws Exception {
+            Long hotelID = Long.parseLong(row.getString(19));
+            String checkIN = row.getString(12);
+            HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
+            boolean firstValue = map != null;
+            boolean secondValue = false;
+            boolean thirdValue = false;
+            if(firstValue){
+                secondValue = map.get(checkIN) != null;
+                if(secondValue){
+                    thirdValue = map.get(checkIN) > 0;
+                }
+            }
+            boolean anwser = firstValue && secondValue && thirdValue;
+            return anwser;
+        }
     }
 }
