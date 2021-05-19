@@ -108,7 +108,7 @@ public class Main {
         public boolean call(Row row) throws Exception {
             Long hotelID = Long.parseLong(row.getString(19));
             String checkIN = row.getString(12);
-            System.out.println(hotelID + " date is " + hotelID);
+            System.out.println(hotelID + " date is " + checkIN);
             HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
             boolean firstValue = map != null;
             boolean secondValue = false;
