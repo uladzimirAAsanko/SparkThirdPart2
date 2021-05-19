@@ -39,7 +39,7 @@ public class Main {
             iterator++;
         }
         System.out.println("Sorted rows is :");
-        data2017.filter(filter).show();
+        data2017.orderBy("hotel_id").filter(filter).show();
     }
 
     private static void invokeHotelData(){
