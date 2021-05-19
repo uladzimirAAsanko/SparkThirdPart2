@@ -32,7 +32,7 @@ public class FilterByWeather implements FilterFunction<Row> {
                 thirdValue = map.get(checkIN) > 0;
             }
         }
-        System.out.println("First check is " + firstValue + " second check " + secondValue + "third check is ");
+        System.out.println("First check is " + firstValue + " second check " + secondValue + " third check is ");
         boolean anwser = firstValue && secondValue && thirdValue;
         System.out.println(anwser);
         return anwser;
