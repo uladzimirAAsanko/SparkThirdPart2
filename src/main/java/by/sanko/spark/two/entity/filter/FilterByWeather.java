@@ -22,7 +22,6 @@ public class FilterByWeather implements FilterFunction<Row> {
     public boolean call(Row row) throws Exception {
         Long hotelID = Long.parseLong(row.getString(19));
         String checkIN = row.getString(12);
-        System.out.println("Hotel Id is " + hotelID + " cheIn " + checkIN);
         HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
         return map != null && map.get(checkIN) != null && map.get(checkIN) > 0;
     }
