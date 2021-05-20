@@ -30,16 +30,6 @@ public class Main {
                 .option("header", "true")
                 .option("delimiter", ";")
                 .load("/user/hadoop/task1/expedia/new_ver/year=2016/*.csv");
-        data2017 = data2017.filter(new FilterFunction<Row>() {
-            @Override
-            public boolean call(Row row) throws Exception {
-                String srchCi = row.getString(12);
-                if(srchCi== null){
-                    return false;
-                }
-                return srchCi.contains("2017");
-            }
-        });
         long distinctHotels =  data2017.selectExpr("CAST(hotel_id AS LONG)").distinct().count();
         System.out.println("DISTINCT HOTELS ARE " + distinctHotels);
         String[] strings = data2017.columns();
