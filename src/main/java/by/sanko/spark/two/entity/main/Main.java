@@ -26,12 +26,10 @@ public class Main {
         spark.sparkContext().setLogLevel("ERROR");
         invokeHotelData();
         Dataset<Row> data2017 = spark.read()
-                //.format("csv")
-                //.option("header", "true")
-                //.option("delimiter", ";")
-                //.load("/user/hadoop/task1/expedia/*.csv");
-                .format("avro")
-                .load("/user/hadoop/task1/expedia/*.avro");
+                .format("csv")
+                .option("header", "true")
+                .option("delimiter", ";")
+                .load("/user/hadoop/task1/expedia/new_ver/year=2016/*.csv");
         data2017 = data2017.filter(new FilterFunction<Row>() {
             @Override
             public boolean call(Row row) throws Exception {
