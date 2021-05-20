@@ -48,10 +48,11 @@ public class Main {
         Dataset<Row> filteredAndMarked =  data2017.orderBy("hotel_id").filter(filter)
                 .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")));
         filteredAndMarked.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)").show();
+        Dataset<Row> tmp = filteredAndMarked
+                .where("stay_type="+StayType.ERRONEOUS_DATA.getStayID())
+                .groupBy("hotel_id").count();
         filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
-                .join( filteredAndMarked
-                        .where("stay_type="+StayType.ERRONEOUS_DATA.getStayID())
-                        .groupBy("hotel_id").count())
+                .join( tmp, filteredAndMarked.col("hotel_id").equalTo(tmp.col("hotel_id")))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
