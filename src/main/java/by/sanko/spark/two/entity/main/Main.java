@@ -63,14 +63,14 @@ public class Main {
         List<Row> data = dataset.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)").collectAsList();
         List<Row> answer = new ArrayList<>();
         for(Row row : data) {
-            String id = row.getString(0);
+            Long id = row.getLong(0);
             String checkIN = row.getString(1);
             String checkOUT = row.getString(2);
             int stayType = StayType.calculateType(checkIN, checkOUT).getStayID();
             answer.add(RowFactory.create(id,stayType));
         }
         List<org.apache.spark.sql.types.StructField> structs = new ArrayList<>();
-        structs.add(DataTypes.createStructField("row_id", DataTypes.StringType,false));
+        structs.add(DataTypes.createStructField("row_id", DataTypes.LongType,false));
         structs.add(DataTypes.createStructField("stay_type", DataTypes.IntegerType,false));
         StructType structures = DataTypes.createStructType(structs);
         Dataset<Row> answerAtAll = sparkSession.createDataFrame(answer, structures);
