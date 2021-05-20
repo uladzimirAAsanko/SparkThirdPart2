@@ -41,7 +41,9 @@ public class Main {
         System.out.println("Sorted rows is :");
         Dataset<Row> calculated = calculateDays(data2017, spark);
         data2017.orderBy("hotel_id").filter(filter)
-                .join(calculated,data2017.col("id").equalTo(calculated.col("row_id"))).show();
+                .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")))
+                .selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)")
+                .show();
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
