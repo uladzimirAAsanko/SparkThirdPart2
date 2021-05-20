@@ -40,7 +40,7 @@ public class Main {
         }
         System.out.println("Sorted rows is :");
         data2017.orderBy("hotel_id").filter(filter)
-                .join(calculateDays(data2017, spark),data2017.col("id").equalTo(calculateDays(data2017, spark).col("id"))).show();
+                .join(calculateDays(data2017, spark),data2017.col("id").equalTo(calculateDays(data2017, spark).col("row_id"))).show();
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
@@ -54,7 +54,7 @@ public class Main {
             answer.add(RowFactory.create(id,stayType));
         }
         List<org.apache.spark.sql.types.StructField> structs = new ArrayList<>();
-        structs.add(DataTypes.createStructField("id", DataTypes.StringType,false));
+        structs.add(DataTypes.createStructField("row_id", DataTypes.StringType,false));
         structs.add(DataTypes.createStructField("stay_type", DataTypes.IntegerType,false));
         StructType structures = DataTypes.createStructType(structs);
         Dataset<Row> answerAtAll = sparkSession.createDataFrame(answer, structures);
