@@ -86,8 +86,6 @@ public class Main {
                 .join( longStay, col("hotel_id").equalTo(longStay.col("hotel_id_5")))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
-        System.out.println("Schema is ");
-        filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().show();
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
@@ -147,6 +145,8 @@ public class Main {
         for(String part : strings){
             System.out.println("Part is     " + part);
         }
+        System.out.println("Show timestamp");
+        df.selectExpr("CAST(timestemp AS STRING)").show();
         df.selectExpr("CAST(value AS STRING)").foreach(row -> {
             String value = row.getString(0);
             int indexOfComma = value.indexOf(Parser.comma);
