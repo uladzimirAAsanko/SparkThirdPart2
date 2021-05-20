@@ -1,13 +1,13 @@
 package by.sanko.spark.two.entity.main;
 
 import by.sanko.spark.two.entity.HotelData;
+import by.sanko.spark.two.entity.StayType;
 import by.sanko.spark.two.parser.HotelParser;
 import by.sanko.spark.two.parser.Parser;
 import org.apache.spark.api.java.function.FilterFunction;
-import org.apache.spark.sql.Dataset;
-import org.apache.spark.sql.Encoders;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.*;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructType;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -39,7 +39,24 @@ public class Main {
             iterator++;
         }
         System.out.println("Sorted rows is :");
-        data2017.orderBy("hotel_id").filter(filter).show();
+        data2017.orderBy("hotel_id").filter(filter).withColumn("stay_type", calculateDays(data2017, spark)) .show();
+    }
+
+    private static Column calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
+        List<Row> data = dataset.selectExpr("CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)").collectAsList();
+        List<Row> answer = new ArrayList<>();
+        for(Row row : data) {
+            String checkIN = row.getString(0);
+            String checkOUT = row.getString(1);
+            int stayType = StayType.calculateType(checkIN, checkOUT).getStayID();
+            answer.add(RowFactory.create(stayType));
+        }
+        List<org.apache.spark.sql.types.StructField> structs = new ArrayList<>();
+        structs.add(DataTypes.createStructField("stay_type", DataTypes.LongType,false));
+        StructType structures = DataTypes.createStructType(structs);
+        Dataset<Row> answerAtAll = sparkSession.createDataFrame(answer, structures);
+        answerAtAll.show();
+        return answerAtAll.col("");
     }
 
     private static void invokeHotelData(){
