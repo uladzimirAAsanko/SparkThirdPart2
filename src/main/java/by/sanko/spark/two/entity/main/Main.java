@@ -52,6 +52,7 @@ public class Main {
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
         System.out.println(filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema());
+        filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().show();
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
