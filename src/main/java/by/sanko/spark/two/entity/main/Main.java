@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static org.apache.spark.sql.functions.col;
 import static scala.reflect.internal.util.NoPosition.show;
 
 public class Main {
@@ -52,7 +53,7 @@ public class Main {
                 .where("stay_type="+StayType.ERRONEOUS_DATA.getStayID())
                 .groupBy("hotel_id").count();
         filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
-                .join( tmp, filteredAndMarked.col("hotel_id").equalTo(tmp.col("hotel_id")))
+                .join( tmp, col("hotel_id").equalTo(tmp.col("hotel_id")))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
