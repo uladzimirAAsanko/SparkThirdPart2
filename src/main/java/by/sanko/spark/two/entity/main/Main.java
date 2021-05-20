@@ -50,7 +50,7 @@ public class Main {
                 .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")));
         filteredAndMarked.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)").show();
         Dataset<Row> tmp = filteredAndMarked
-                .where("stay_type="+StayType.ERRONEOUS_DATA.getStayID())
+                .where("stay_type="+StayType.STANDARD_STAY.getStayID())
                 .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_1");
         filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
                 .join( tmp, col("hotel_id").equalTo(tmp.col("hotel_id_1")))
