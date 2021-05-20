@@ -5,6 +5,7 @@ import by.sanko.spark.two.entity.StayType;
 import by.sanko.spark.two.parser.HotelParser;
 import by.sanko.spark.two.parser.Parser;
 import org.apache.spark.api.java.function.FilterFunction;
+import org.apache.spark.internal.config.R;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
@@ -27,7 +28,14 @@ public class Main {
         Dataset<Row> data2017 = spark.read().format("csv")
                 .option("header", "true")
                 .option("delimiter", ";")
-                .load("/user/hadoop/task1/expedia/new_ver/year=2016/*.csv");
+                .load("/user/hadoop/task1/expedia/*.csv");
+        data2017 = data2017.filter(new FilterFunction<Row>() {
+            @Override
+            public boolean call(Row row) throws Exception {
+                String srchCi = row.getString(12);
+                return srchCi.contains("2017");
+            }
+        });
         long distinctHotels =  data2017.selectExpr("CAST(hotel_id AS LONG)").distinct().count();
         System.out.println("DISTINCT HOTELS ARE " + distinctHotels);
         String[] strings = data2017.columns();
@@ -40,10 +48,9 @@ public class Main {
         }
         System.out.println("Sorted rows is :");
         Dataset<Row> calculated = calculateDays(data2017, spark);
-        data2017.orderBy("hotel_id").filter(filter)
-                .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")))
-                .selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)")
-                .show();
+        Dataset<Row> filteredAndMarked =  data2017.orderBy("hotel_id").filter(filter)
+                .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")));
+        filteredAndMarked.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)").show();
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
