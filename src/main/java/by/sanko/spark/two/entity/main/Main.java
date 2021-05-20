@@ -5,8 +5,6 @@ import by.sanko.spark.two.entity.StayType;
 import by.sanko.spark.two.parser.HotelParser;
 import by.sanko.spark.two.parser.Parser;
 import org.apache.spark.api.java.function.FilterFunction;
-import org.apache.spark.api.java.function.ForeachFunction;
-import org.apache.spark.internal.config.R;
 import org.apache.spark.sql.*;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructType;
@@ -16,14 +14,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.apache.spark.sql.functions.col;
-import static scala.reflect.internal.util.NoPosition.show;
+import static org.apache.spark.sql.functions.col;;
 
 public class Main {
     private static final HashMap<Long, HotelData> hotelData = new HashMap<>();
     private static final HashMap<Long, HashMap<String, Double>> hotelWeatherHM = new HashMap<>();
     private static final String HOTEL_WEATHER_JOINED  = "hotel-and-weather-joined-simple";
     private static FilterByWeather filter = new FilterByWeather();
+    private static Dataset<Row> timestamp = null;
 
     public static void main(String[] args) {
         SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
@@ -84,6 +82,7 @@ public class Main {
                 .join( standardStay, col("hotel_id").equalTo(standardStay.col("hotel_id_3")))
                 .join( standardExtStay, col("hotel_id").equalTo(standardExtStay.col("hotel_id_4")))
                 .join( longStay, col("hotel_id").equalTo(longStay.col("hotel_id_5")))
+                .withColumn("timestamp", timestamp.col("timestamp"))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
     }
@@ -145,8 +144,8 @@ public class Main {
         for(String part : strings){
             System.out.println("Part is     " + part);
         }
-        System.out.println("Show timestamp");
-        df.selectExpr("CAST(timestamp AS STRING)").show();
+        timestamp = df.selectExpr("CAST(timestamp AS STRING)");
+        timestamp.show();
         df.selectExpr("CAST(value AS STRING)").foreach(row -> {
             String value = row.getString(0);
             int indexOfComma = value.indexOf(Parser.comma);
