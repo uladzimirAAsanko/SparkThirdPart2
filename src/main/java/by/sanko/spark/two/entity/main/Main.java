@@ -146,7 +146,7 @@ public class Main {
             System.out.println("Part is     " + part);
         }
         System.out.println("Show timestamp");
-        df.selectExpr("CAST(timestemp AS STRING)").show();
+        df.selectExpr("CAST(timestamp AS STRING)").show();
         df.selectExpr("CAST(value AS STRING)").foreach(row -> {
             String value = row.getString(0);
             int indexOfComma = value.indexOf(Parser.comma);
