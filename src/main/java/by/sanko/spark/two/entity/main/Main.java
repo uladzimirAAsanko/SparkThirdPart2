@@ -52,7 +52,7 @@ public class Main {
             answer.add(RowFactory.create(stayType));
         }
         List<org.apache.spark.sql.types.StructField> structs = new ArrayList<>();
-        structs.add(DataTypes.createStructField("stay_type", DataTypes.LongType,false));
+        structs.add(DataTypes.createStructField("stay_type", DataTypes.IntegerType,false));
         StructType structures = DataTypes.createStructType(structs);
         Dataset<Row> answerAtAll = sparkSession.createDataFrame(answer, structures);
         answerAtAll.show();
