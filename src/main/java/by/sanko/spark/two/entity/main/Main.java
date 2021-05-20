@@ -25,7 +25,8 @@ public class Main {
         SparkSession spark = SparkSession.builder().appName("Simple Application").getOrCreate();
         spark.sparkContext().setLogLevel("ERROR");
         invokeHotelData();
-        Dataset<Row> data2017 = spark.read().format("csv")
+        Dataset<Row> data2017 = spark.read()
+                //.format("csv")
                 //.option("header", "true")
                 //.option("delimiter", ";")
                 //.load("/user/hadoop/task1/expedia/*.csv");
