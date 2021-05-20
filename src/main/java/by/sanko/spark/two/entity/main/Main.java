@@ -49,11 +49,41 @@ public class Main {
         Dataset<Row> filteredAndMarked =  data2017.orderBy("hotel_id").filter(filter)
                 .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")));
         filteredAndMarked.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)").show();
-        Dataset<Row> tmp = filteredAndMarked
+        Dataset<Row> ennoreous = filteredAndMarked
+                .where("stay_type="+StayType.ERRONEOUS_DATA.getStayID())
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_1")
+                .withColumnRenamed("count","cnt_err");
+        Dataset<Row> shortStay = filteredAndMarked
+                .where("stay_type="+StayType.SHORT_STAY.getStayID())
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_2")
+                .withColumnRenamed("count","cnt_shrt");
+        Dataset<Row> standardStay = filteredAndMarked
                 .where("stay_type="+StayType.STANDARD_STAY.getStayID())
-                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_1");
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_3")
+                .withColumnRenamed("count","cnt_stnd");
+        Dataset<Row> standardExtStay = filteredAndMarked
+                .where("stay_type="+StayType.STANDARD_STAY.getStayID())
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_4")
+                .withColumnRenamed("count","cnt_stnd_ext");
+        Dataset<Row> longStay = filteredAndMarked
+                .where("stay_type="+StayType.STANDARD_STAY.getStayID())
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_5")
+                .withColumnRenamed("count","cnt_long_ext");
+        Dataset<Row> chldStay = filteredAndMarked
+                .where("srch_children_cnt>" + 0)
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_6")
+                .withColumnRenamed("count","cnt_chld_ext");
+        Dataset<Row> allCnt = filteredAndMarked
+                .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_7")
+                .withColumnRenamed("count","all_cnt");
         filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
-                .join( tmp, col("hotel_id").equalTo(tmp.col("hotel_id_1")))
+                .join( ennoreous, col("hotel_id").equalTo(ennoreous.col("hotel_id_1")))
+                .join( shortStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_2")))
+                .join( standardStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_3")))
+                .join( standardExtStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_4")))
+                .join( longStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_5")))
+                .join( chldStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_6")))
+                .join( allCnt, col("hotel_id").equalTo(ennoreous.col("hotel_id_7")))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
