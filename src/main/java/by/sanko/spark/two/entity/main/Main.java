@@ -48,10 +48,11 @@ public class Main {
         Dataset<Row> filteredAndMarked =  data2017.orderBy("hotel_id").filter(filter)
                 .join(calculated,data2017.col("id").equalTo(calculated.col("row_id")));
         filteredAndMarked.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)","CAST(stay_type AS STRING)").show();
-        filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct().show();
+        filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
+                .withColumn("cnt_err", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().col("count"))
+                .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
-        System.out.println(filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema());
         filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().show();
     }
 
