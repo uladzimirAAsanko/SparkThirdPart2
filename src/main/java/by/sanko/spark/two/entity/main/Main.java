@@ -44,7 +44,7 @@ public class Main {
     }
 
     private static Dataset<Row> calculateDays(Dataset<Row> dataset, SparkSession sparkSession){
-        List<Row> data = dataset.selectExpr("CAST(id AS LONG)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)").collectAsList();
+        List<Row> data = dataset.selectExpr("CAST(id AS STRING)","CAST(srch_ci AS STRING)", "CAST(srch_co AS STRING)").collectAsList();
         List<Row> answer = new ArrayList<>();
         for(Row row : data) {
             String id = row.getString(0);
