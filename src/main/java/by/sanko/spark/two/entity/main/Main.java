@@ -142,7 +142,7 @@ public class Main {
 
         @Override
         public boolean call(Row row) throws Exception {
-            Long hotelID = Long.parseLong(row.getString(19));
+            Long hotelID = row.getLong(19);
             String checkIN = row.getString(12);
             HashMap<String, Double> map = Main.hotelWeatherHM.get(hotelID);
             boolean firstValue = map != null;
