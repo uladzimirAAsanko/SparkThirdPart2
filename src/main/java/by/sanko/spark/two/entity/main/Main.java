@@ -56,7 +56,7 @@ public class Main {
         StructType structures = DataTypes.createStructType(structs);
         Dataset<Row> answerAtAll = sparkSession.createDataFrame(answer, structures);
         answerAtAll.show();
-        return answerAtAll.col("");
+        return answerAtAll.col("stay_type");
     }
 
     private static void invokeHotelData(){
