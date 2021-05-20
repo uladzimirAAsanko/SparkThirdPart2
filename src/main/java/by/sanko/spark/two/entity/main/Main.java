@@ -77,13 +77,13 @@ public class Main {
                 .groupBy("hotel_id").count().withColumnRenamed("hotel_id","hotel_id_7")
                 .withColumnRenamed("count","all_cnt");
         filteredAndMarked.selectExpr("CAST(hotel_id AS STRING)").distinct()
+                .join( allCnt, col("hotel_id").equalTo(allCnt.col("hotel_id_7")))
+                .join( chldStay, col("hotel_id").equalTo(chldStay.col("hotel_id_6")))
                 .join( ennoreous, col("hotel_id").equalTo(ennoreous.col("hotel_id_1")))
-                .join( shortStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_2")))
-                .join( standardStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_3")))
-                .join( standardExtStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_4")))
-                .join( longStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_5")))
-                .join( chldStay, col("hotel_id").equalTo(ennoreous.col("hotel_id_6")))
-                .join( allCnt, col("hotel_id").equalTo(ennoreous.col("hotel_id_7")))
+                .join( shortStay, col("hotel_id").equalTo(shortStay.col("hotel_id_2")))
+                .join( standardStay, col("hotel_id").equalTo(standardStay.col("hotel_id_3")))
+                .join( standardExtStay, col("hotel_id").equalTo(standardExtStay.col("hotel_id_4")))
+                .join( longStay, col("hotel_id").equalTo(longStay.col("hotel_id_5")))
                 .show();
         //filteredAndMarked.withColumn("cnt_ennor", filteredAndMarked.where("stay_type="+StayType.ERRONEOUS_DATA.getStayID()).groupBy("hotel_id").count().schema();
         System.out.println("Schema is ");
