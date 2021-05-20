@@ -36,6 +36,10 @@ public class Main {
             @Override
             public boolean call(Row row) throws Exception {
                 String srchCi = row.getString(12);
+                System.out.println(srchCi);
+                if(srchCi== null){
+                    return false;
+                }
                 return srchCi.contains("2017");
             }
         });
